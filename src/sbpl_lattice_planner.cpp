@@ -362,7 +362,7 @@ bool SBPLLatticePlanner::makePlan(const geometry_msgs::PoseStamped& start,
 
   //create a message for the plan 
   nav_msgs::Path gui_path;
-  gui_path.poses.resize(sbpl_path.size());
+  gui_path.poses.reserve(sbpl_path.size());
   gui_path.header.frame_id = costmap_ros_->getGlobalFrameID();
   gui_path.header.stamp = plan_time;
   for(unsigned int i=0; i<sbpl_path.size(); i++){
@@ -382,10 +382,7 @@ bool SBPLLatticePlanner::makePlan(const geometry_msgs::PoseStamped& start,
     pose.pose.orientation.w = temp.getW();
 
     plan.push_back(pose);
-
-    gui_path.poses[i].pose.position.x = plan[i].pose.position.x;
-    gui_path.poses[i].pose.position.y = plan[i].pose.position.y;
-    gui_path.poses[i].pose.position.z = plan[i].pose.position.z;
+    gui_path.poses.push_back(pose);
   }
   plan_pub_.publish(gui_path);
   publishStats(solution_cost, sbpl_path.size(), start, goal);
